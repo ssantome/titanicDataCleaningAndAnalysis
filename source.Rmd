@@ -1,0 +1,219 @@
+---
+title: 'Limpieza y análisis de datos del Titanic'
+author: "Autores: Saúl Santomé Rúa y Víctor Elías Afonso Rodríguez"
+date: "Mayo 2021"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Cargamos los paquetes R que vamos a usar
+library(ggplot2)
+library(dplyr)
+
+# Cargamos el fichero de datos
+titanicData <- read.csv('titanicData.csv',stringsAsFactors = FALSE)
+filas=dim(titanicData)[1]
+columnas=dim(titanicData)[2]
+
+# Verificamos la estructura del conjunto de datos
+str(titanicData)
+```
+Se muestra un resumen
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+summary(titanicData)
+```
+
+se muestran los datos vacios
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Estadísticas de valores vacíos
+colSums(is.na(titanicData))
+colSums(titanicData=="")
+
+```
+--- Age: Como vemos aqui hay muchos pasajeros que no tienen edad, habria que buscar solucion (aplicar algoritmo, probablemente la mediana  o la media, quizas borrar)
+
+--- Cabin: en cabin hay muchisimos vacios, se podría intentar identificar el por que... van menos de un dia y no duermen, no pagaron camarote, con personal del barco y no tienen asignado camarote, etc. hay que ver como solventar que esta variable este vacia. aqui lo mejor creo que es ponerle un "desconocido" ya que cualquier otro valor daria resultados erroneos en el analisis, y borrarlos es exagerado ya que hay muchisimos
+
+--- Embarked: aqio solo hay 2 valores vacios, seria una buena opcion borrarlos y olvidarse de ellos, pero hay que valorarlo.
+
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Ponemos la media a los valores vacíos de la variable "Age"
+titanicData$Age[is.na(titanicData$Age)] <- mean(titanicData$Age,na.rm=T)
+
+# Ponemos valor "Desconocido" a los valores vacíos de la variable "Cabin"
+titanicData$Cabin[titanicData$Cabin==""]="Desconocido"
+
+#Borramos los valores vacios de embarked
+titanicData <- titanicData[!titanicData$Embarked=="",]
+
+head(titanicData)
+
+```
+
+Ahora vamos a discretizar la variable edad, que nos resultará útil a la hora de analizar.....
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Añadimos la edad discretizada al dataset. Discretizamos con intervalos de igual amplitud
+
+summary(titanicData[,"Age"])
+
+titanicData["Age_discreta"] <- cut(titanicData$Age, breaks = c(0,10,20,30,40,50,60,70,81), labels = c("0-9", "10-19", "20-29", "30-39","40-49","50-59","60-69","70-80"))
+
+head(titanicData)
+
+plot(titanicData$Age_discreta)
+
+```
+Tambien se podría normalizar un dato, para "demostrar" que sabemos hacerlo jajaja. pero bueno, tampoco es muy necesario, aunque es muy sencillo, por ejemplo.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+#Normalizacion por la diferencia
+minFare = min(titanicData$Fare)
+maxFare = max(titanicData$Fare)
+diffMinMaxFare = maxFare - minFare
+
+titanicData["Fare_norm"] <- ((titanicData$Fare - minFare) / diffMinMaxFare)
+head(titanicData)
+
+```
+
+
+
+Tambien esta guay mostrar los valores unicos, para ver si hay alguno extraño. Aqui se añade texto explicando asi se encuentra algun valor raro, lo interesante es hacerlo solo con las variables discretas(hay que filtrar el for para que solo se haga con las discretas). Spoiler ->, no hay ningun valor raro.
+Esto deveria ir antes de la eliminacion de valores nulos, ya que al ver los uniques es como sabemos que los nulos se representan con ""
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+for (i in 1:dim(titanicData)[2]){
+    print(unique(titanicData[i]))
+}
+
+```
+
+
+
+
+Simplificacion de datos:  Ahora vamos a analizar los valores redundantes, o que simplemente no tengan una funcion especial en el dataset, como por ejemplo, el nombre de los pasajeros no es nada util ya teniendo un id de pasajero, asi que podriamos simplemente eliminar esa columna.
+
+se puede tambien hacer alguna comparacion entre si 2 campos coinciden mucho, pero ya se ve a suimple vista que no, asi que no seria muy necesario
+
+
+
+
+Ahora se podrian ver valores extremos. por ejemplo el precio, que hay un billete que valio mas de 500 € como vimos en el summary
+
+aqui podemos aprovechar nuestra variable normalizada o no, tanto da
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+#representación de la distribución de los precios de los billetes
+ggplot(data=titanicData, aes(x=Fare)) + geom_boxplot()
+ggplot(data=titanicData, aes(x=Fare_norm)) + geom_boxplot()
+
+
+```
+Vemos como el valo de 500 es altaqmente extraño, podriamos buscarle solucion, o eliminarlo, tambien hay valores por encima de 200 que chirrian un poco, pero aqui ya se podria ver si coinciden con camarotes de lujo etc. 
+
+Creo que no hay mas variables donde ver valores extremos.
+
+
+## Analisis
+
+
+
+Como la varaible survived es una clase vamos a discretizar la varaible tranformandola a string
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+titanicData["Survived_discreta"] <- cut(titanicData$Survived, breaks = c(-1,0.5,1), labels = c("No", "Si"))
+
+head(titanicData)
+
+plot(titanicData$Survived_discreta)
+
+```
+
+A partir de aqui ya comenzariamos con el analisis de los datos, asi que hay que empezar a comparar los diferentes atributos con la varaible survived
+
+Empezamos por la edad
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+ggplot(data=titanicData, aes(x=Age, y=Survived_discreta)) + geom_boxplot()
+
+```
+
+Sex
+
+No se por que coño sale NA aqui, hay que arreglarlo, pero no encuentro el por que
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+ggplot(data=titanicData[1:filas,],aes(x=Sex,fill=Survived_discreta))+geom_bar()
+
+```
+
+Relacion entre age y sex para ampliar explicacion sobre losd atos de antes
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+ggplot(data=titanicData[1:filas,],aes(x=Age_discreta,fill=Sex))+geom_bar(position="fill")+ylab("Frecuencia")
+
+```
+
+Ahora hay que seguir buscando relaciones interesantes para completar el analisis
+
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+ggplot(data=titanicData[1:filas,],aes(y=Embarked,fill=Survived_discreta))+geom_bar(position="fill")+ylab("Frecuencia")
+
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+ggplot(data=titanicData[1:filas,],aes(y=Pclass,fill=Survived_discreta))+geom_bar(position="fill")+facet_wrap(~Embarked)+theme(axis.text.y = element_text(size = rel(0.7)))
+
+```
+Y a partir de aqui todas las combinaciones de columnas y graficas de las que podamos sacar algo de partido para explicar bien el analisis
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+```
