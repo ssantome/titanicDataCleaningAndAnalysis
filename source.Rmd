@@ -124,6 +124,7 @@ ggplot(data=titanicData, aes(x=Fare_norm)) + geom_boxplot()
 
 Vemos como el valor de 500 es altamente extraño, podriamos buscarle solucion, o eliminarlo, tambien hay valores por encima de 200 que chirrian un poco, pero aqui ya se podria ver si coinciden con camarotes de lujo etc. 
 
+
 Creo que no hay mas variables donde ver valores extremos.
 
 
@@ -162,7 +163,7 @@ ggplot(data=titanicData[1:filas,],aes(x=Sex,fill=Survived_discreta))+geom_bar()
 
 ```
 
-Relacion entre age y sex para ampliar explicacion sobre losd atos de antes
+Relacion entre age y sex para ampliar explicacion sobre los datos de antes
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 ggplot(data=titanicData[1:filas,],aes(x=Age_discreta,fill=Sex))+geom_bar(position="fill")+ylab("Frecuencia")
 
