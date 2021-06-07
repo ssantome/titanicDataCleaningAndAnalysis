@@ -1,14 +1,19 @@
-# titanicDataCleaningAndAnalysis
+## titanicDataCleaningAndAnalysis
 
-# 1. Descripción del dataset. ¿Por qué es importante y qué pregunta/problema pretende responder?
+## Tipología y ciclo de vida de los datos.
 
-# 2. Integración y selección de los datos de interés a analizar.
-# 3. Limpieza de los datos.
-## 3.1. ¿Los datos contienen ceros o elementos vacíos? ¿Cómo gestionarías cada uno de estos casos?
-## 3.2. Identificación y tratamiento de valores extremos.
-# 4. Análisis de los datos.
-## 4.1. Selección de los grupos de datos que se quieren analizar/comparar (planificación de los análisis a aplicar).
-## 4.2. Comprobación de la normalidad y homogeneidad de la varianza.
-## 4.3. Aplicación de pruebas estadísticas para comparar los grupos de datos. En función de los datos y el objetivo del estudio, aplicar pruebas de contraste de hipótesis, correlaciones, regresiones, etc. Aplicar al menos tres métodos de análisis diferentes.
-# 5. Representación de los resultados a partir de tablas y gráficas.
-# 6. Resolución del problema. A partir de los resultados obtenidos, ¿cuáles son las conclusiones? ¿Los resultados permiten responder al problema?
+## Práctica 2: Limpieza y análisis de datos.
+
+# Descripción
+  Se pone en práctica técnicas de limpieza y de análisis para crear conocimiento. La información con la que se trabaja se encuentra en el siguiente enlace: https://www.kaggle.com/c/titanic/data
+
+# Miembros del equipo
+Saúl Santome y  Víctor Afonso
+
+# Licencia
+Database released under Open Data Commons Open Database License (ODbL) v1.0, individual contents under Database Contents License (DbCL) v1.0
+
+# Recursos
+Calvo M., Subirats L., Pérez D. (2019). Introducción a la limpieza y análisis de los datos. Editorial UOC.
+Megan Squire (2015). Clean Data. Packt Publishing Ltd.
+Peter Dalgaard (2008). Introductory statistics with R. Springer Science & Business Media.
