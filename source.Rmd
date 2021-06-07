@@ -29,7 +29,19 @@ Se muestra un resumen
 summary(titanicData)
 ```
 
-se muestran los datos vacios
+Esta guay mostrar los valores unicos, para ver si hay alguno extraño. Aqui se añade texto explicando si se encuentra algun valor raro, lo interesante es hacerlo solo con las variables discretas(hay que filtrar el for para que solo se haga con las discretas). Spoiler ->, no hay ningun valor raro.
+Esto deberia ir antes de la eliminacion de valores nulos, ya que al ver los uniques es como sabemos que los nulos se representan con ""
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+for (i in 1:dim(titanicData)[2]){
+    print(unique(titanicData[i]))
+}
+
+```
+
+
+Se muestran los datos vacios
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 # Estadísticas de valores vacíos
@@ -39,9 +51,9 @@ colSums(titanicData=="")
 ```
 --- Age: Como vemos aqui hay muchos pasajeros que no tienen edad, habria que buscar solucion (aplicar algoritmo, probablemente la mediana  o la media, quizas borrar)
 
---- Cabin: en cabin hay muchisimos vacios, se podría intentar identificar el por que... van menos de un dia y no duermen, no pagaron camarote, con personal del barco y no tienen asignado camarote, etc. hay que ver como solventar que esta variable este vacia. aqui lo mejor creo que es ponerle un "desconocido" ya que cualquier otro valor daria resultados erroneos en el analisis, y borrarlos es exagerado ya que hay muchisimos
+--- Cabin: en cabin hay muchisimos vacios, se podría intentar identificar el por que... van menos de un dia y no duermen, no pagaron camarote, son personal del barco y no tienen asignado camarote, etc. hay que ver como solventar que esta variable este vacia. aqui lo mejor creo que es ponerle un "desconocido" ya que cualquier otro valor daria resultados erroneos en el analisis, y borrarlos es exagerado ya que hay muchisimos
 
---- Embarked: aqio solo hay 2 valores vacios, seria una buena opcion borrarlos y olvidarse de ellos, pero hay que valorarlo.
+--- Embarked: aquí solo hay 2 valores vacios, seria una buena opcion borrarlos y olvidarse de ellos, pero hay que valorarlo.
 
 
 
@@ -73,6 +85,7 @@ head(titanicData)
 plot(titanicData$Age_discreta)
 
 ```
+
 Tambien se podría normalizar un dato, para "demostrar" que sabemos hacerlo jajaja. pero bueno, tampoco es muy necesario, aunque es muy sencillo, por ejemplo.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
@@ -88,21 +101,8 @@ head(titanicData)
 
 
 
-Tambien esta guay mostrar los valores unicos, para ver si hay alguno extraño. Aqui se añade texto explicando asi se encuentra algun valor raro, lo interesante es hacerlo solo con las variables discretas(hay que filtrar el for para que solo se haga con las discretas). Spoiler ->, no hay ningun valor raro.
-Esto deveria ir antes de la eliminacion de valores nulos, ya que al ver los uniques es como sabemos que los nulos se representan con ""
 
-```{r echo=TRUE, message=FALSE, warning=FALSE}
-
-for (i in 1:dim(titanicData)[2]){
-    print(unique(titanicData[i]))
-}
-
-```
-
-
-
-
-Simplificacion de datos:  Ahora vamos a analizar los valores redundantes, o que simplemente no tengan una funcion especial en el dataset, como por ejemplo, el nombre de los pasajeros no es nada util ya teniendo un id de pasajero, asi que podriamos simplemente eliminar esa columna.
+Simplificacion de datos:  Ahora vamos a analizar los valores redundantes, o que simplemente no tengan una funcion especial en el dataset, como por ejemplo, el nombre de los pasajeros no es nada util teniendo un id de pasajero, asi que podriamos simplemente eliminar esa columna.
 
 se puede tambien hacer alguna comparacion entre si 2 campos coinciden mucho, pero ya se ve a suimple vista que no, asi que no seria muy necesario
 
@@ -121,7 +121,8 @@ ggplot(data=titanicData, aes(x=Fare_norm)) + geom_boxplot()
 
 
 ```
-Vemos como el valo de 500 es altaqmente extraño, podriamos buscarle solucion, o eliminarlo, tambien hay valores por encima de 200 que chirrian un poco, pero aqui ya se podria ver si coinciden con camarotes de lujo etc. 
+
+Vemos como el valor de 500 es altamente extraño, podriamos buscarle solucion, o eliminarlo, tambien hay valores por encima de 200 que chirrian un poco, pero aqui ya se podria ver si coinciden con camarotes de lujo etc. 
 
 Creo que no hay mas variables donde ver valores extremos.
 
@@ -140,6 +141,8 @@ head(titanicData)
 plot(titanicData$Survived_discreta)
 
 ```
+
+Esto se puede usar como introducción y para tener una idea visual de como afectan las diferentes variables en la supervivencia y asi elegir que datos analizar. Antes de hacerlo de la homogeniedad y normalidad, y aplicar las correlaciones, regrasiones, etc.
 
 A partir de aqui ya comenzariamos con el analisis de los datos, asi que hay que empezar a comparar los diferentes atributos con la varaible survived
 
@@ -171,7 +174,7 @@ Ahora hay que seguir buscando relaciones interesantes para completar el analisis
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
-ggplot(data=titanicData[1:filas,],aes(y=Embarked,fill=Survived_discreta))+geom_bar(position="fill")+ylab("Frecuencia")
+ggplot(data=titanicData[1:filas,],aes(y=Embarked,fill=Survived_discreta))+geom_bar(position="fill")
 
 ```
 
