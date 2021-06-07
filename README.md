@@ -10,9 +10,6 @@
 ## Miembros del equipo
 Saúl Santome y  Víctor Afonso
 
-## Licencia
-Database released under Open Data Commons Open Database License (ODbL) v1.0, individual contents under Database Contents License (DbCL) v1.0
-
 ## Recursos
 Calvo M., Subirats L., Pérez D. (2019). Introducción a la limpieza y análisis de los datos. Editorial UOC.
 Megan Squire (2015). Clean Data. Packt Publishing Ltd.
